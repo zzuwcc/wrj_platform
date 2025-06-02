@@ -88,12 +88,17 @@
 /* 卡片美化 */
 .red-side > div, .blue-side > div {
   background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.10);
+  border-radius: 20px;
+  box-shadow: 0 6px 24px 0 rgba(31, 38, 135, 0.13);
   border: none;
   transition: box-shadow 0.2s;
-  min-width: 260px;
-  max-width: 350px;
+  min-width: 270px;
+  max-width: 370px;
+  margin-bottom: 10px;
+  padding: 22px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .red-side > div:hover, .blue-side > div:hover {
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
@@ -103,12 +108,13 @@
 .red-side input, .blue-side input {
   border: 1.5px solid #cbd5e1;
   border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 17px;
+  padding: 12px 16px;
+  font-size: 18px;
   outline: none;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
   background: #f1f5f9;
   transition: border-color 0.2s;
+  width: 90%;
 }
 .red-side input:focus, .blue-side input:focus {
   border-color: #6366f1;
@@ -134,8 +140,17 @@
 }
 
 .red-side > div {
-  border-left: 6px solid #ef4444;
+  border-left: 7px solid #ef4444;
 }
 .blue-side > div {
-  border-right: 6px solid #3b82f6;
+  border-right: 7px solid #3b82f6;
+}
+
+.red-side > div > div:first-child,
+.blue-side > div > div:first-child {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+  color: #222;
 }

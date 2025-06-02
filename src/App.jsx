@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ScenarioSelector from "./components/ScenarioSelector";
 import ParamCard from "./components/ParamCard";
 import StartButton from "./components/StartButton";
+import ImagePlayer from "./components/ImagePlayer";
 import "./App.css";
 
 const mapConfigs = {
@@ -33,17 +34,20 @@ const mapConfigs = {
 
 export default function App() {
   const [selectedMap, setSelectedMap] = useState("");
+  const [showPlayer, setShowPlayer] = useState(false);
   const config = selectedMap && mapConfigs[selectedMap] ? mapConfigs[selectedMap] : { red: {}, blue: {} };
 
   return (
     <div className="container">
-      <div className="scenario-selector">
-        <ScenarioSelector value={selectedMap} onChange={e => setSelectedMap(e.target.value)} />
-      </div>
+      {!showPlayer && (
+        <div className="scenario-selector">
+          <ScenarioSelector value={selectedMap} onChange={e => { setSelectedMap(e.target.value); setShowPlayer(false); }} />
+        </div>
+      )}
       {!selectedMap && (
         <div className="center-title">无人机对战、侦察任务</div>
       )}
-      {selectedMap && (
+      {selectedMap && !showPlayer && (
         <>
           <div className="red-side">
             {/* 红方 */}
@@ -67,10 +71,11 @@ export default function App() {
             ))}
           </div>
           <div className="start-btn">
-            <StartButton />
+            <StartButton onStart={() => setShowPlayer(true)} />
           </div>
         </>
       )}
+      {showPlayer && <ImagePlayer onClose={() => setShowPlayer(false)} />}
     </div>
   );
 }
