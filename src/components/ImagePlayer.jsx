@@ -1,41 +1,70 @@
 import React, { useEffect, useState, useRef } from "react";
 
-export default function ImagePlayer({ onClose }) {
+export default function ImagePlayer({ onClose, fetching, setFetching }) {
   const [images, setImages] = useState([]);
   const [current, setCurrent] = useState(0);
+  const noChangeCount = useRef(0);
+  const lastImagesLength = useRef(0);
   const timer = useRef(null);
 
   // 定时获取图片列表
   useEffect(() => {
+    if (!fetching) return;
     const fetchImages = async () => {
       const res = await fetch("http://localhost:5001/images_list");
       const files = await res.json();
       setImages(files);
+
+      // 检查图片数量是否有变化
+      if (files.length === lastImagesLength.current) {
+        noChangeCount.current += 1;
+      } else {
+        noChangeCount.current = 0;
+        lastImagesLength.current = files.length;
+      }
+      // 如果连续5次（5秒）都没变化，停止轮询
+      if (files.length && noChangeCount.current >= 5) {
+        setFetching(false);
+      }
     };
     fetchImages();
-    const interval = setInterval(fetchImages, 2000); // 每2秒刷新一次图片列表
+    const interval = setInterval(fetchImages, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetching, setFetching]);
 
   // 自动播放
   useEffect(() => {
     if (images.length === 0) return;
+    if (current >= images.length - 1) return; // 到最后一张就不再自动播放
     timer.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % images.length);
-    }, 50); // 每0.05秒切换一张
+      setCurrent((prev) => {
+        if (prev < images.length - 1) {
+          return prev + 1;
+        }
+        return prev;
+      });
+    }, 40);
     return () => clearInterval(timer.current);
-  }, [images]);
+  }, [images, current]);
 
   const handleClose = async () => {
     await fetch("http://localhost:5001/clear_images", { method: "POST" });
     if (onClose) onClose();
   };
 
-  if (images.length === 0) return <div style={{textAlign:'center',marginTop:40}}>等待图片生成中...</div>;
+  // 重新播放
+  const handleReplay = () => {
+    setCurrent(0);
+  };
+
+  if (images.length === 0) return <div style={{textAlign:'center',marginTop:40}}>等待任务执行...</div>;
 
   return (
     <div style={{ textAlign: "center", marginTop: 40 }}>
-      <button onClick={handleClose} style={{position:'absolute',right:40,top:40,padding:'10px 28px',fontSize:'1.1rem',borderRadius:12,background:'#ef4444',color:'#fff',border:'none',boxShadow:'0 2px 8px #0002',cursor:'pointer'}}>关闭</button>
+      <div style={{position:'absolute',right:40,top:40,display:'flex',gap:16}}>
+        <button onClick={handleReplay} style={{padding:'10px 28px',fontSize:'1.1rem',borderRadius:12,background:'#60a5fa',color:'#fff',border:'none',boxShadow:'0 2px 8px #0002',cursor:'pointer'}}>重新播放</button>
+        <button onClick={handleClose} style={{padding:'10px 28px',fontSize:'1.1rem',borderRadius:12,background:'#ef4444',color:'#fff',border:'none',boxShadow:'0 2px 8px #0002',cursor:'pointer'}}>关闭</button>
+      </div>
       <img
         src={`http://localhost:5001/images/${images[current]}`}
         alt="render"
@@ -44,6 +73,7 @@ export default function ImagePlayer({ onClose }) {
       <div style={{ marginTop: 10, color: "#555" }}>
         {current + 1} / {images.length}
       </div>
+      {!fetching && <div style={{color:'#888',marginTop:8}}>任务数据已全部加载，已停止刷新</div>}
     </div>
   );
 } 

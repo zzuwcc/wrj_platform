@@ -35,6 +35,7 @@ const mapConfigs = {
 export default function App() {
   const [selectedMap, setSelectedMap] = useState("");
   const [showPlayer, setShowPlayer] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const config = selectedMap && mapConfigs[selectedMap] ? mapConfigs[selectedMap] : { red: {}, blue: {} };
 
   return (
@@ -71,11 +72,11 @@ export default function App() {
             ))}
           </div>
           <div className="start-btn">
-            <StartButton onStart={() => setShowPlayer(true)} />
+            <StartButton onStart={() => { setFetching(true); setShowPlayer(true); }} />
           </div>
         </>
       )}
-      {showPlayer && <ImagePlayer onClose={() => setShowPlayer(false)} />}
+      {showPlayer && <ImagePlayer onClose={() => setShowPlayer(false)} fetching={fetching} setFetching={setFetching} />}
     </div>
   );
 }
