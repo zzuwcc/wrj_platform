@@ -40,43 +40,61 @@ export default function App() {
 
   return (
     <div className="container">
-      {!showPlayer && (
-        <div className="scenario-selector">
+      {/* 顶部选择区：下拉框、开始、重新播放、关闭 */}
+      <div className="top-bar">
+        <div className="scenario-selector-inline">
           <ScenarioSelector value={selectedMap} onChange={e => { setSelectedMap(e.target.value); setShowPlayer(false); }} />
         </div>
-      )}
+        {/* 只在选定场景后显示开始按钮 */}
+        {selectedMap && (
+          <div className="start-btn-inline">
+            <StartButton
+              selectedMap={selectedMap}
+              onStarted={() => {
+                setFetching(true);
+                setShowPlayer(true);
+              }}
+            />
+          </div>
+        )}
+      </div>
+      {/* 只在未选择地图时显示标题 */}
       {!selectedMap && (
         <div className="center-title">无人机对战、侦察任务</div>
       )}
-      {selectedMap && !showPlayer && (
-        <>
-          <div className="red-side">
-            {/* 红方 */}
-            {config.red.recons && config.red.recons.map((id) => (
-              <ParamCard key={`red-recon-${id}`} type="recon" id={id} color="#ef4444" />
-            ))}
-            {config.red.cannons && config.red.cannons.map((id) => (
-              <ParamCard key={`red-cannon-${id}`} type="cannon" id={id} color="#b91c1c" />
-            ))}
+      {/* 参数卡片和图片播放器区域 */}
+      {selectedMap && (
+        <div className={`main-content${showPlayer ? ' show-player' : ''}`}>
+          <div className="side-cards">
+            <div className="red-side">
+              {/* 红方 */}
+              {config.red.recons && config.red.recons.map((id) => (
+                <ParamCard key={`red-recon-${id}`} type="recon" id={id} color="#ef4444" />
+              ))}
+              {config.red.cannons && config.red.cannons.map((id) => (
+                <ParamCard key={`red-cannon-${id}`} type="cannon" id={id} color="#b91c1c" />
+              ))}
+            </div>
           </div>
-          <div className="blue-side">
-            {/* 蓝方 */}
-            {config.blue.recons && config.blue.recons.map((id) => (
-              <ParamCard key={`blue-recon-${id}`} type="recon" id={id} color="#3b82f6" />
-            ))}
-            {config.blue.cannons && config.blue.cannons.map((id) => (
-              <ParamCard key={`blue-cannon-${id}`} type="cannon" id={id} color="#1e40af" />
-            ))}
-            {config.blue.defenses && config.blue.defenses.map((id) => (
-              <ParamCard key={`blue-defense-${id}`} type="defense" id={id} color="#0ea5e9" />
-            ))}
+          <div className="center-player">
+            {showPlayer && <ImagePlayer onClose={() => setShowPlayer(false)} fetching={fetching} setFetching={setFetching} />}
           </div>
-          <div className="start-btn">
-            <StartButton onStart={() => { setFetching(true); setShowPlayer(true); }} />
+          <div className="side-cards">
+            <div className="blue-side">
+              {/* 蓝方 */}
+              {config.blue.recons && config.blue.recons.map((id) => (
+                <ParamCard key={`blue-recon-${id}`} type="recon" id={id} color="#3b82f6" />
+              ))}
+              {config.blue.cannons && config.blue.cannons.map((id) => (
+                <ParamCard key={`blue-cannon-${id}`} type="cannon" id={id} color="#1e40af" />
+              ))}
+              {config.blue.defenses && config.blue.defenses.map((id) => (
+                <ParamCard key={`blue-defense-${id}`} type="defense" id={id} color="#0ea5e9" />
+              ))}
+            </div>
           </div>
-        </>
+        </div>
       )}
-      {showPlayer && <ImagePlayer onClose={() => setShowPlayer(false)} fetching={fetching} setFetching={setFetching} />}
     </div>
   );
 }

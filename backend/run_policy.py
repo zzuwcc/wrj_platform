@@ -9,10 +9,21 @@ CORS(app)  # 允许所有跨域请求
 
 IMG_DIR = r'C:\Users\wcc\code\py\wrjv1\MACA\render\tmp'
 
+@app.route('/run_policy_detect', methods=['POST'])
+def run_policy_detect():
+    work_dir = r'C:\Users\wcc\code\py\wrjv1'
+    command = r'conda run -n maca python .\MACA\algorithm\ippo\TestPolicy_detect.py'
+    process = subprocess.Popen(
+        command,
+        cwd=work_dir,
+        shell=True
+    )
+    return jsonify({'status': 'started', 'pid': process.pid})
+
 @app.route('/run_policy', methods=['POST'])
 def run_policy():
     work_dir = r'C:\Users\wcc\code\py\wrjv1'
-    command = r'conda run -n maca python .\MACA\algorithm\ippo\TestPolicy_detect.py'
+    command = r'conda run -n maca python .\MACA\algorithm\ippo\TestPolicy.py'
     process = subprocess.Popen(
         command,
         cwd=work_dir,

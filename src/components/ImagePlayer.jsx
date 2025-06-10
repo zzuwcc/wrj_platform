@@ -61,10 +61,6 @@ export default function ImagePlayer({ onClose, fetching, setFetching }) {
 
   return (
     <div style={{ textAlign: "center", marginTop: 40 }}>
-      <div style={{position:'absolute',right:40,top:40,display:'flex',gap:16}}>
-        <button onClick={handleReplay} style={{padding:'10px 28px',fontSize:'1.1rem',borderRadius:12,background:'#60a5fa',color:'#fff',border:'none',boxShadow:'0 2px 8px #0002',cursor:'pointer'}}>重新播放</button>
-        <button onClick={handleClose} style={{padding:'10px 28px',fontSize:'1.1rem',borderRadius:12,background:'#ef4444',color:'#fff',border:'none',boxShadow:'0 2px 8px #0002',cursor:'pointer'}}>关闭</button>
-      </div>
       <img
         src={`http://localhost:5001/images/${images[current]}`}
         alt="render"
@@ -74,6 +70,10 @@ export default function ImagePlayer({ onClose, fetching, setFetching }) {
         {current + 1} / {images.length}
       </div>
       {!fetching && <div style={{color:'#888',marginTop:8}}>任务数据已全部加载，已停止刷新</div>}
+      <div style={{ marginTop: 18, display: 'flex', justifyContent: 'center', gap: '16px' }}>
+        <button className="btn-main btn-blue" onClick={handleReplay}>重新播放</button>
+        <button className="btn-main btn-red" onClick={handleClose}>关闭</button>
+      </div>
     </div>
   );
 } 
