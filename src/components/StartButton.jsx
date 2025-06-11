@@ -15,7 +15,7 @@ export default function StartButton({ selectedMap, onStarted }) {
   };
   return (
     <button style={{
-      width: "150px", height: "50px", fontSize: "22px"
+      width: "120px", height: "40px", fontSize: "20px"
     }} className="btn-main btn-blue" onClick={handleClick}>
       开始
     </button>

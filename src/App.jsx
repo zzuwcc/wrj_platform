@@ -7,16 +7,16 @@ import "./App.css";
 
 const mapConfigs = {
   map1: {
-    red: { recons: [1, 2], cannons: [1, 2] },
-    blue: { recons: [1], cannons: [1, 2, 3] }
+    red: { recons: [1, 2], cannons: [1, 2, 3, 4, 5] },
+    blue: { recons: [1, 2], cannons: [1, 2, 3, 4, 5] }
   },
   map2: {
-    red: { recons: [1], cannons: [1, 2] },
-    blue: { recons: [1, 2], cannons: [1] }
+    red: { recons: [1, 2], cannons: [1, 2, 3, 4] },
+    blue: { recons: [1, 2], cannons: [1, 2, 3, 4, 5] }
   },
   map3: {
-    red: { recons: [1, 2, 3], cannons: [1] },
-    blue: { recons: [1], cannons: [1, 2] }
+    red: { recons: [1], cannons: [1, 2, 3] },
+    blue: { recons: [1, 2], cannons: [1, 2, 3, 4, 5] }
   },
   map4: {
     red: { recons: [1, 2, 3, 4] },
@@ -32,11 +32,136 @@ const mapConfigs = {
   }
 };
 
+// 参数选项映射
+const radiusOptions = [
+  { label: "大", value: "large" },
+  { label: "中", value: "medium" },
+  { label: "小", value: "small" }
+];
+const speedOptions = [
+  { label: "快", value: "fast" },
+  { label: "中", value: "medium" },
+  { label: "慢", value: "slow" }
+];
+
+function getDefaultParams(config) {
+  // 生成所有机型的默认参数
+  const obj = { red: {}, blue: {} };
+  if (config.red.recons) {
+    obj.red.recons = {};
+    config.red.recons.forEach(id => {
+      obj.red.recons[String(id)] = { radius: "medium", speed: "medium" };
+    });
+  }
+  if (config.red.cannons) {
+    obj.red.cannons = {};
+    config.red.cannons.forEach(id => {
+      obj.red.cannons[String(id)] = { radius: "medium", speed: "medium" };
+    });
+  }
+  if (config.blue.recons) {
+    obj.blue.recons = {};
+    config.blue.recons.forEach(id => {
+      obj.blue.recons[String(id)] = { radius: "medium", speed: "medium" };
+    });
+  }
+  if (config.blue.cannons) {
+    obj.blue.cannons = {};
+    config.blue.cannons.forEach(id => {
+      obj.blue.cannons[String(id)] = { radius: "medium", speed: "medium" };
+    });
+  }
+  if (config.blue.defenses) {
+    obj.blue.defenses = {};
+    config.blue.defenses.forEach(id => {
+      obj.blue.defenses[String(id)] = { radius: "medium" };
+    });
+  }
+  return obj;
+}
+
 export default function App() {
   const [selectedMap, setSelectedMap] = useState("");
   const [showPlayer, setShowPlayer] = useState(false);
   const [fetching, setFetching] = useState(true);
   const config = selectedMap && mapConfigs[selectedMap] ? mapConfigs[selectedMap] : { red: {}, blue: {} };
+
+  // 机型编号选择状态
+  const [selectedIdx, setSelectedIdx] = useState({
+    red: { recons: "1", cannons: "1" },
+    blue: { recons: "1", cannons: "1", defenses: "1" }
+  });
+  // 参数状态
+  const [params, setParams] = useState(() => getDefaultParams(config));
+
+  // 切换地图时重置参数
+  React.useEffect(() => {
+    setParams(getDefaultParams(config));
+    setSelectedIdx({
+      red: {
+        recons: config.red.recons ? String(config.red.recons[0]) : "1",
+        cannons: config.red.cannons ? String(config.red.cannons[0]) : "1"
+      },
+      blue: {
+        recons: config.blue.recons ? String(config.blue.recons[0]) : "1",
+        cannons: config.blue.cannons ? String(config.blue.cannons[0]) : "1",
+        defenses: config.blue.defenses ? String(config.blue.defenses[0]) : "1"
+      }
+    });
+  }, [selectedMap]);
+
+  // 参数变更回调
+  const handleParamChange = (side, type, id, key, value) => {
+    console.log(`App收到参数变更: ${side} ${type} ${id} ${key}=${value}`);
+    console.log('更新前params:', JSON.stringify(params));
+    
+    // 简化状态更新逻辑
+    setParams(prev => {
+      // 深拷贝当前状态
+      const newParams = JSON.parse(JSON.stringify(prev));
+      
+      // 确保路径存在
+      if (!newParams[side]) newParams[side] = {};
+      if (!newParams[side][type]) newParams[side][type] = {};
+      if (!newParams[side][type][id]) {
+        newParams[side][type][id] = type === 'defense' 
+          ? { radius: "medium" } 
+          : { radius: "medium", speed: "medium" };
+      }
+      
+      // 更新指定参数
+      newParams[side][type][id][key] = value;
+      
+      console.log('更新后params:', JSON.stringify(newParams));
+      return newParams;
+    });
+  };
+
+  // 机型编号切换
+  const handleIdxChange = (side, type, id) => {
+    console.log(`App收到编号切换: ${side} ${type} ${id}`);
+    console.log('更新前selectedIdx:', JSON.stringify(selectedIdx));
+    
+    // 简化状态更新逻辑
+    setSelectedIdx(prev => {
+      const newSelectedIdx = { ...prev };
+      if (!newSelectedIdx[side]) newSelectedIdx[side] = {};
+      newSelectedIdx[side][type] = String(id);
+      
+      console.log('更新后selectedIdx:', JSON.stringify(newSelectedIdx));
+      return newSelectedIdx;
+    });
+  };
+
+  // 提交参数
+  const handleSubmit = async () => {
+    await fetch("http://localhost:5001/submit_params", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params)
+    });
+    alert("参数已提交！");
+  };
 
   return (
     <div className="container">
@@ -55,6 +180,7 @@ export default function App() {
                 setShowPlayer(true);
               }}
             />
+            <button className="btn-main btn-blue" style={{ marginLeft: 12, width: "120px", height: "40px", fontSize: "20px"}} onClick={handleSubmit}>提交参数</button>
           </div>
         )}
       </div>
@@ -67,13 +193,38 @@ export default function App() {
         <div className={`main-content${showPlayer ? ' show-player' : ''}`}>
           <div className="side-cards">
             <div className="red-side">
-              {/* 红方 */}
-              {config.red.recons && config.red.recons.map((id) => (
-                <ParamCard key={`red-recon-${id}`} type="recon" id={id} color="#ef4444" />
-              ))}
-              {config.red.cannons && config.red.cannons.map((id) => (
-                <ParamCard key={`red-cannon-${id}`} type="cannon" id={id} color="#b91c1c" />
-              ))}
+              {/* 红方侦察机 */}
+              {config.red.recons && (
+                <ParamCard
+                  key={`red-recon-${selectedIdx.red.recons}`}
+                  type="recons"
+                  id={selectedIdx.red.recons}
+                  idList={config.red.recons.map(String)}
+                  color="#ef4444"
+                  side="red"
+                  param={params.red?.recons?.[selectedIdx.red.recons] || { radius: "medium", speed: "medium" }}
+                  onParamChange={handleParamChange}
+                  onIdxChange={handleIdxChange}
+                  radiusOptions={radiusOptions}
+                  speedOptions={speedOptions}
+                />
+              )}
+              {/* 红方战斗机 */}
+              {config.red.cannons && (
+                <ParamCard
+                  key={`red-cannon-${selectedIdx.red.cannons}`}
+                  type="cannons"
+                  id={selectedIdx.red.cannons}
+                  idList={config.red.cannons.map(String)}
+                  color="#b91c1c"
+                  side="red"
+                  param={params.red?.cannons?.[selectedIdx.red.cannons] || { radius: "medium", speed: "medium" }}
+                  onParamChange={handleParamChange}
+                  onIdxChange={handleIdxChange}
+                  radiusOptions={radiusOptions}
+                  speedOptions={speedOptions}
+                />
+              )}
             </div>
           </div>
           <div className="center-player">
@@ -81,16 +232,53 @@ export default function App() {
           </div>
           <div className="side-cards">
             <div className="blue-side">
-              {/* 蓝方 */}
-              {config.blue.recons && config.blue.recons.map((id) => (
-                <ParamCard key={`blue-recon-${id}`} type="recon" id={id} color="#3b82f6" />
-              ))}
-              {config.blue.cannons && config.blue.cannons.map((id) => (
-                <ParamCard key={`blue-cannon-${id}`} type="cannon" id={id} color="#1e40af" />
-              ))}
-              {config.blue.defenses && config.blue.defenses.map((id) => (
-                <ParamCard key={`blue-defense-${id}`} type="defense" id={id} color="#0ea5e9" />
-              ))}
+              {/* 蓝方侦察机 */}
+              {config.blue.recons && (
+                <ParamCard
+                  key={`blue-recon-${selectedIdx.blue.recons}`}
+                  type="recons"
+                  id={selectedIdx.blue.recons}
+                  idList={config.blue.recons.map(String)}
+                  color="#3b82f6"
+                  side="blue"
+                  param={params.blue?.recons?.[selectedIdx.blue.recons] || { radius: "medium", speed: "medium" }}
+                  onParamChange={handleParamChange}
+                  onIdxChange={handleIdxChange}
+                  radiusOptions={radiusOptions}
+                  speedOptions={speedOptions}
+                />
+              )}
+              {/* 蓝方战斗机 */}
+              {config.blue.cannons && (
+                <ParamCard
+                  key={`blue-cannon-${selectedIdx.blue.cannons}`}
+                  type="cannons"
+                  id={selectedIdx.blue.cannons}
+                  idList={config.blue.cannons.map(String)}
+                  color="#1e40af"
+                  side="blue"
+                  param={params.blue?.cannons?.[selectedIdx.blue.cannons] || { radius: "medium", speed: "medium" }}
+                  onParamChange={handleParamChange}
+                  onIdxChange={handleIdxChange}
+                  radiusOptions={radiusOptions}
+                  speedOptions={speedOptions}
+                />
+              )}
+              {/* 蓝方防空系统 */}
+              {config.blue.defenses && (
+                <ParamCard
+                  key={`blue-defense-${selectedIdx.blue.defenses}`}
+                  type="defenses"
+                  id={selectedIdx.blue.defenses}
+                  idList={config.blue.defenses.map(String)}
+                  color="#0ea5e9"
+                  side="blue"
+                  param={params.blue?.defenses?.[selectedIdx.blue.defenses] || { radius: "medium" }}
+                  onParamChange={handleParamChange}
+                  onIdxChange={handleIdxChange}
+                  radiusOptions={radiusOptions}
+                />
+              )}
             </div>
           </div>
         </div>

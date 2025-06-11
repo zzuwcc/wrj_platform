@@ -49,5 +49,12 @@ def clear_images():
             os.remove(os.path.join(IMG_DIR, f))
     return jsonify({'status': 'cleared'})
 
+@app.route('/submit_params', methods=['POST'])
+def submit_params():
+    data = request.get_json()
+    print('Received params:', data)
+    # 可在此处保存到文件或进一步处理
+    return jsonify({'status': 'ok'})
+
 if __name__ == '__main__':
     app.run(port=5001) 
