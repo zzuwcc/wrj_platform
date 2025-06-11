@@ -2,9 +2,9 @@ import React from "react";
 
 export default function ParamCard({ type, id, idList, color, side, param = {}, onParamChange, onIdxChange, radiusOptions, speedOptions }) {
   const typeMap = {
-    recon: "侦察机",
-    cannon: "战斗机",
-    defense: "防空系统"
+    recons: "侦察机",
+    cannons: "战斗机",
+    defenses: "防空系统"
   };
   
   // 机型编号下拉
@@ -76,7 +76,7 @@ export default function ParamCard({ type, id, idList, color, side, param = {}, o
         </div>
         
         {/* 速度只在侦察机/战斗机显示 */}
-        {(type === "recon" || type === "cannon") && speedOptions && (
+        {(type === "recons" || type === "cannons") && speedOptions && (
           <div>
             <span>速度：</span>
             <select
