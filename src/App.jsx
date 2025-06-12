@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import ScenarioSelector from "./components/ScenarioSelector";
 import ParamCard from "./components/ParamCard";
 import StartButton from "./components/StartButton";
 import ImagePlayer from "./components/ImagePlayer";
+import logoSvg from "./assets/logo.svg";
+import backgroundSvg from "./assets/background.svg";
 import "./App.css";
 
 const mapConfigs = {
@@ -155,134 +158,200 @@ export default function App() {
 
   // 提交参数
   const handleSubmit = async () => {
-    await fetch("http://localhost:5001/submit_params", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(params)
-    });
-    alert("参数已提交！");
+    try {
+      await fetch("http://localhost:5001/submit_params", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params)
+      });
+      // 使用更现代的通知方式
+      showNotification("参数提交成功！", "success");
+    } catch (error) {
+      showNotification("参数提交失败，请重试", "error");
+    }
+  };
+  
+  // 简单的通知函数
+  const showNotification = (message, type = "info") => {
+    const notification = document.createElement("div");
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // 动画效果
+    setTimeout(() => {
+      notification.classList.add("show");
+    }, 10);
+    
+    // 自动消失
+    setTimeout(() => {
+      notification.classList.remove("show");
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
   };
 
   return (
     <div className="container">
-      {/* 顶部选择区：下拉框、开始、重新播放、关闭 */}
-      <div className="top-bar">
-        <div className="scenario-selector-inline">
-          <ScenarioSelector value={selectedMap} onChange={e => { setSelectedMap(e.target.value); setShowPlayer(false); }} />
+      {/* Background Pattern */}
+      <div className="background-pattern">
+        <img src={backgroundSvg} alt="Background Pattern" />
+      </div>
+      
+      {/* Header with Logo */}
+      <header className="app-header">
+        <div className="logo-container">
+          <img src={logoSvg} alt="Logo" />
         </div>
-        {/* 只在选定场景后显示开始按钮 */}
+      </header>
+      
+      {/* Main Content */}
+      <main className="app-main">
+        {/* 顶部选择区：下拉框、开始、重新播放、关闭 */}
+        <div className="top-bar">
+          <div className="scenario-selector-container">
+            <ScenarioSelector value={selectedMap} onChange={e => { setSelectedMap(e.target.value); setShowPlayer(false); }} />
+          </div>
+          {/* 只在选定场景后显示按钮 */}
+          {selectedMap && (
+            <div className="action-buttons">
+              <StartButton
+                selectedMap={selectedMap}
+                onStarted={() => {
+                  setFetching(true);
+                  setShowPlayer(true);
+                }}
+              />
+              <motion.button 
+                className="btn-main btn-submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSubmit}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px"
+                }}
+              >
+                提交参数
+              </motion.button>
+            </div>
+          )}
+        </div>
+        
+        {/* 只在未选择地图时显示标题 */}
+        {!selectedMap && (
+          <motion.div 
+            className="center-title"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h1>无人机对战、侦察任务</h1>
+            <p>选择地图开始配置任务参数</p>
+          </motion.div>
+        )}
+        
+        {/* 参数卡片和图片播放器区域 */}
         {selectedMap && (
-          <div className="start-btn-inline">
-            <StartButton
-              selectedMap={selectedMap}
-              onStarted={() => {
-                setFetching(true);
-                setShowPlayer(true);
-              }}
-            />
-            <button className="btn-main btn-blue" style={{ marginLeft: 12, width: "120px", height: "40px", fontSize: "20px"}} onClick={handleSubmit}>提交参数</button>
+          <div className={`main-content${showPlayer ? ' show-player' : ''}`}>
+            <div className="side-cards">
+              <h2 className="team-title red">红方</h2>
+              <div className="red-side">
+                {/* 红方侦察机 */}
+                {config.red.recons && (
+                  <ParamCard
+                    key={`red-recon-${selectedIdx.red.recons}`}
+                    type="recons"
+                    id={selectedIdx.red.recons}
+                    idList={config.red.recons.map(String)}
+                    color="#ef4444"
+                    side="red"
+                    param={params.red?.recons?.[selectedIdx.red.recons] || { radius: "medium", speed: "medium" }}
+                    onParamChange={handleParamChange}
+                    onIdxChange={handleIdxChange}
+                    radiusOptions={radiusOptions}
+                    speedOptions={speedOptions}
+                  />
+                )}
+                {/* 红方战斗机 */}
+                {config.red.cannons && (
+                  <ParamCard
+                    key={`red-cannon-${selectedIdx.red.cannons}`}
+                    type="cannons"
+                    id={selectedIdx.red.cannons}
+                    idList={config.red.cannons.map(String)}
+                    color="#b91c1c"
+                    side="red"
+                    param={params.red?.cannons?.[selectedIdx.red.cannons] || { radius: "medium", speed: "medium" }}
+                    onParamChange={handleParamChange}
+                    onIdxChange={handleIdxChange}
+                    radiusOptions={radiusOptions}
+                    speedOptions={speedOptions}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="center-player">
+              {showPlayer && <ImagePlayer onClose={() => setShowPlayer(false)} fetching={fetching} setFetching={setFetching} />}
+            </div>
+            <div className="side-cards">
+              <h2 className="team-title blue">蓝方</h2>
+              <div className="blue-side">
+                {/* 蓝方侦察机 */}
+                {config.blue.recons && (
+                  <ParamCard
+                    key={`blue-recon-${selectedIdx.blue.recons}`}
+                    type="recons"
+                    id={selectedIdx.blue.recons}
+                    idList={config.blue.recons.map(String)}
+                    color="#3b82f6"
+                    side="blue"
+                    param={params.blue?.recons?.[selectedIdx.blue.recons] || { radius: "medium", speed: "medium" }}
+                    onParamChange={handleParamChange}
+                    onIdxChange={handleIdxChange}
+                    radiusOptions={radiusOptions}
+                    speedOptions={speedOptions}
+                  />
+                )}
+                {/* 蓝方战斗机 */}
+                {config.blue.cannons && (
+                  <ParamCard
+                    key={`blue-cannon-${selectedIdx.blue.cannons}`}
+                    type="cannons"
+                    id={selectedIdx.blue.cannons}
+                    idList={config.blue.cannons.map(String)}
+                    color="#1e40af"
+                    side="blue"
+                    param={params.blue?.cannons?.[selectedIdx.blue.cannons] || { radius: "medium", speed: "medium" }}
+                    onParamChange={handleParamChange}
+                    onIdxChange={handleIdxChange}
+                    radiusOptions={radiusOptions}
+                    speedOptions={speedOptions}
+                  />
+                )}
+                {/* 蓝方防空系统 */}
+                {config.blue.defenses && (
+                  <ParamCard
+                    key={`blue-defense-${selectedIdx.blue.defenses}`}
+                    type="defenses"
+                    id={selectedIdx.blue.defenses}
+                    idList={config.blue.defenses.map(String)}
+                    color="#0ea5e9"
+                    side="blue"
+                    param={params.blue?.defenses?.[selectedIdx.blue.defenses] || { radius: "medium" }}
+                    onParamChange={handleParamChange}
+                    onIdxChange={handleIdxChange}
+                    radiusOptions={radiusOptions}
+                  />
+                )}
+              </div>
+            </div>
           </div>
         )}
-      </div>
-      {/* 只在未选择地图时显示标题 */}
-      {!selectedMap && (
-        <div className="center-title">无人机对战、侦察任务</div>
-      )}
-      {/* 参数卡片和图片播放器区域 */}
-      {selectedMap && (
-        <div className={`main-content${showPlayer ? ' show-player' : ''}`}>
-          <div className="side-cards">
-            <div className="red-side">
-              {/* 红方侦察机 */}
-              {config.red.recons && (
-                <ParamCard
-                  key={`red-recon-${selectedIdx.red.recons}`}
-                  type="recons"
-                  id={selectedIdx.red.recons}
-                  idList={config.red.recons.map(String)}
-                  color="#ef4444"
-                  side="red"
-                  param={params.red?.recons?.[selectedIdx.red.recons] || { radius: "medium", speed: "medium" }}
-                  onParamChange={handleParamChange}
-                  onIdxChange={handleIdxChange}
-                  radiusOptions={radiusOptions}
-                  speedOptions={speedOptions}
-                />
-              )}
-              {/* 红方战斗机 */}
-              {config.red.cannons && (
-                <ParamCard
-                  key={`red-cannon-${selectedIdx.red.cannons}`}
-                  type="cannons"
-                  id={selectedIdx.red.cannons}
-                  idList={config.red.cannons.map(String)}
-                  color="#b91c1c"
-                  side="red"
-                  param={params.red?.cannons?.[selectedIdx.red.cannons] || { radius: "medium", speed: "medium" }}
-                  onParamChange={handleParamChange}
-                  onIdxChange={handleIdxChange}
-                  radiusOptions={radiusOptions}
-                  speedOptions={speedOptions}
-                />
-              )}
-            </div>
-          </div>
-          <div className="center-player">
-            {showPlayer && <ImagePlayer onClose={() => setShowPlayer(false)} fetching={fetching} setFetching={setFetching} />}
-          </div>
-          <div className="side-cards">
-            <div className="blue-side">
-              {/* 蓝方侦察机 */}
-              {config.blue.recons && (
-                <ParamCard
-                  key={`blue-recon-${selectedIdx.blue.recons}`}
-                  type="recons"
-                  id={selectedIdx.blue.recons}
-                  idList={config.blue.recons.map(String)}
-                  color="#3b82f6"
-                  side="blue"
-                  param={params.blue?.recons?.[selectedIdx.blue.recons] || { radius: "medium", speed: "medium" }}
-                  onParamChange={handleParamChange}
-                  onIdxChange={handleIdxChange}
-                  radiusOptions={radiusOptions}
-                  speedOptions={speedOptions}
-                />
-              )}
-              {/* 蓝方战斗机 */}
-              {config.blue.cannons && (
-                <ParamCard
-                  key={`blue-cannon-${selectedIdx.blue.cannons}`}
-                  type="cannons"
-                  id={selectedIdx.blue.cannons}
-                  idList={config.blue.cannons.map(String)}
-                  color="#1e40af"
-                  side="blue"
-                  param={params.blue?.cannons?.[selectedIdx.blue.cannons] || { radius: "medium", speed: "medium" }}
-                  onParamChange={handleParamChange}
-                  onIdxChange={handleIdxChange}
-                  radiusOptions={radiusOptions}
-                  speedOptions={speedOptions}
-                />
-              )}
-              {/* 蓝方防空系统 */}
-              {config.blue.defenses && (
-                <ParamCard
-                  key={`blue-defense-${selectedIdx.blue.defenses}`}
-                  type="defenses"
-                  id={selectedIdx.blue.defenses}
-                  idList={config.blue.defenses.map(String)}
-                  color="#0ea5e9"
-                  side="blue"
-                  param={params.blue?.defenses?.[selectedIdx.blue.defenses] || { radius: "medium" }}
-                  onParamChange={handleParamChange}
-                  onIdxChange={handleIdxChange}
-                  radiusOptions={radiusOptions}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      </main>
     </div>
   );
 }

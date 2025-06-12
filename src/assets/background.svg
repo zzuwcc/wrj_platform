@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440px" height="900px" viewBox="0 0 1440 900" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="bgGradient">
+            <stop stop-color="#e0e7ff" offset="0%"></stop>
+            <stop stop-color="#f8fafc" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="100%" id="gridGradient">
+            <stop stop-color="#cbd5e1" stop-opacity="0.1" offset="0%"></stop>
+            <stop stop-color="#cbd5e1" stop-opacity="0.05" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background -->
+        <rect fill="url(#bgGradient)" x="0" y="0" width="1440" height="900"></rect>
+        
+        <!-- Grid Pattern -->
+        <path d="M0,100 L1440,100 M0,200 L1440,200 M0,300 L1440,300 M0,400 L1440,400 M0,500 L1440,500 M0,600 L1440,600 M0,700 L1440,700 M0,800 L1440,800" 
+              stroke="url(#gridGradient)" stroke-width="1"></path>
+        <path d="M100,0 L100,900 M200,0 L200,900 M300,0 L300,900 M400,0 L400,900 M500,0 L500,900 M600,0 L600,900 M700,0 L700,900 M800,0 L800,900 M900,0 L900,900 M1000,0 L1000,900 M1100,0 L1100,900 M1200,0 L1200,900 M1300,0 L1300,900" 
+              stroke="url(#gridGradient)" stroke-width="1"></path>
+              
+        <!-- Decorative Elements -->
+        <circle fill="#6366f1" fill-opacity="0.05" cx="200" cy="200" r="100"></circle>
+        <circle fill="#60a5fa" fill-opacity="0.05" cx="1200" cy="700" r="150"></circle>
+        <circle fill="#ef4444" fill-opacity="0.05" cx="300" cy="600" r="80"></circle>
+    </g>
+</svg> 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120px" height="120px" viewBox="0 0 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle fill="#F3F4F6" cx="60" cy="60" r="60"/>
+        <g transform="translate(20, 20)">
+            <!-- Base -->
+            <rect fill="currentColor" x="25" y="55" width="30" height="15" rx="2"/>
+            <!-- Radar Dish -->
+            <circle fill="currentColor" cx="40" cy="35" r="15" stroke="#FFFFFF" stroke-width="2"/>
+            <!-- Radar Lines -->
+            <line x1="40" y1="35" x2="55" y2="20" stroke="currentColor" stroke-width="2"/>
+            <line x1="40" y1="35" x2="25" y2="20" stroke="currentColor" stroke-width="2"/>
+            <!-- Stand -->
+            <rect fill="currentColor" x="35" y="35" width="10" height="20" rx="1"/>
+            <!-- Radar Signal -->
+            <path d="M40,35 C50,25 60,25 70,35" stroke="currentColor" stroke-width="2" fill="none"/>
+            <path d="M40,35 C30,25 20,25 10,35" stroke="currentColor" stroke-width="2" fill="none"/>
+        </g>
+    </g>
+</svg> 

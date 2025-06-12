@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240px" height="60px" viewBox="0 0 240 60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Logo Background -->
+        <rect fill="#FFFFFF" x="0" y="0" width="240" height="60" rx="10"></rect>
+        
+        <!-- Red Drone Symbol -->
+        <g transform="translate(20, 15)">
+            <circle fill="#ef4444" cx="15" cy="15" r="8"></circle>
+            <line x1="5" y1="15" x2="25" y2="15" stroke="#ef4444" stroke-width="2"></line>
+            <line x1="15" y1="5" x2="15" y2="25" stroke="#ef4444" stroke-width="2"></line>
+        </g>
+        
+        <!-- Blue Drone Symbol -->
+        <g transform="translate(195, 15)">
+            <circle fill="#3b82f6" cx="15" cy="15" r="8"></circle>
+            <line x1="5" y1="15" x2="25" y2="15" stroke="#3b82f6" stroke-width="2"></line>
+            <line x1="15" y1="5" x2="15" y2="25" stroke="#3b82f6" stroke-width="2"></line>
+        </g>
+        
+        <!-- Text -->
+        <text font-family="Arial-BoldMT, Arial" font-size="20" font-weight="bold" fill="#334155">
+            <tspan x="60" y="36">无人机平台</tspan>
+        </text>
+    </g>
+</svg> 
