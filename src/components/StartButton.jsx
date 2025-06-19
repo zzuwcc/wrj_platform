@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaPlay, FaSpinner } from "react-icons/fa";
 
-export default function StartButton({ selectedMap, onStarted }) {
+export default function StartButton({ selectedMap, onStarted, params }) {
   const [loading, setLoading] = useState(false);
   
   const handleClick = async () => {
@@ -16,6 +16,15 @@ export default function StartButton({ selectedMap, onStarted }) {
     if (url) {
       setLoading(true);
       try {
+        // 先提交参数
+        await fetch("http://localhost:5001/submit_params", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(params)
+        });
+        showNotification("参数提交成功！", "success");
+        
+        // 然后启动任务
         await fetch(url, { 
           method: "POST",
           headers: {
@@ -23,11 +32,12 @@ export default function StartButton({ selectedMap, onStarted }) {
           },
           body: JSON.stringify({ map: selectedMap })
         });
-        // 使用更现代的通知方式
         showNotification("已启动后端任务！", "success");
+        
         if (onStarted) onStarted();
       } catch (error) {
-        showNotification("启动任务失败，请重试", "error");
+        showNotification("操作失败，请重试", "error");
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }

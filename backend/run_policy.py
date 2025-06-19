@@ -120,9 +120,9 @@ def submit_params():
                 'large': 200
             },
             'cannons': {
-                'small': 60,
-                'medium': 70,
-                'large': 80
+                'small': 50,
+                'medium': 60,
+                'large': 70
             },
             'defenses': {
                 'small': 50,

@@ -156,21 +156,6 @@ export default function App() {
     });
   };
 
-  // 提交参数
-  const handleSubmit = async () => {
-    try {
-      await fetch("http://localhost:5001/submit_params", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(params)
-      });
-      // 使用更现代的通知方式
-      showNotification("参数提交成功！", "success");
-    } catch (error) {
-      showNotification("参数提交失败，请重试", "error");
-    }
-  };
-  
   // 简单的通知函数
   const showNotification = (message, type = "info") => {
     const notification = document.createElement("div");
@@ -218,25 +203,12 @@ export default function App() {
             <div className="action-buttons">
               <StartButton
                 selectedMap={selectedMap}
+                params={params}
                 onStarted={() => {
                   setFetching(true);
                   setShowPlayer(true);
                 }}
               />
-              <motion.button 
-                className="btn-main btn-submit"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleSubmit}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px"
-                }}
-              >
-                提交参数
-              </motion.button>
             </div>
           )}
         </div>

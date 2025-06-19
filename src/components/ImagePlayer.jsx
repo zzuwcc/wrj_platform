@@ -158,7 +158,13 @@ export default function ImagePlayer({ onClose, fetching, setFetching, selectedMa
           >
             <FaPlay /> 重新播放
           </button>
-          
+        </div>
+        
+        <div style={{ color: '#555', fontSize: '16px', fontWeight: '500', textAlign: 'center' }}>
+          {current + 1} / {images.length}
+        </div>
+        
+        <div style={{ display: 'flex', gap: '12px' }}>
           <button 
             className="btn-main btn-download"
             onClick={handleDownloadGif}
@@ -181,14 +187,7 @@ export default function ImagePlayer({ onClose, fetching, setFetching, selectedMa
           >
             <FaDownload /> 下载回放
           </button>
-        </div>
-        
-        <div style={{ color: '#555', fontSize: '16px', fontWeight: '500' }}>
-          {current + 1} / {images.length}
-          {!fetching && <span style={{color:'#888', marginLeft: '10px'}}>· 任务数据已全部加载</span>}
-        </div>
-        
-        <div>
+          
           <button 
             className="btn-main btn-close"
             onClick={handleClose}
@@ -231,6 +230,23 @@ export default function ImagePlayer({ onClose, fetching, setFetching, selectedMa
             boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)" 
           }}
         />
+        
+        {/* 任务数据加载状态 - 移到图片下方 */}
+        {!fetching && (
+          <div style={{
+            color: '#666',
+            fontSize: '14px',
+            fontWeight: '500',
+            marginTop: '12px',
+            textAlign: 'center',
+            backgroundColor: 'rgba(243, 244, 246, 0.7)',
+            padding: '6px 12px',
+            borderRadius: '6px',
+            display: 'inline-block'
+          }}>
+            任务数据已全部加载
+          </div>
+        )}
       </motion.div>
     </div>
   );
