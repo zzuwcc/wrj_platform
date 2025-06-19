@@ -16,7 +16,13 @@ export default function StartButton({ selectedMap, onStarted }) {
     if (url) {
       setLoading(true);
       try {
-        await fetch(url, { method: "POST" });
+        await fetch(url, { 
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ map: selectedMap })
+        });
         // 使用更现代的通知方式
         showNotification("已启动后端任务！", "success");
         if (onStarted) onStarted();

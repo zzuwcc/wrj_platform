@@ -23,15 +23,15 @@ const mapConfigs = {
   },
   map4: {
     red: { recons: [1, 2, 3, 4] },
-    blue: { defenses: [1, 2, 3] }
+    blue: { defenses: [1, 2, 3, 4, 5] }
   },
   map5: {
     red: { recons: [1, 2, 3, 4] },
-    blue: { defenses: [1, 2, 3] }
+    blue: { defenses: [1, 2, 3, 4, 5] }
   },
   map6: {
     red: { recons: [1, 2, 3, 4] },
-    blue: { defenses: [1, 2, 3] }
+    blue: { defenses: [1, 2, 3, 4, 5] }
   }
 };
 
@@ -295,7 +295,12 @@ export default function App() {
               </div>
             </div>
             <div className="center-player">
-              {showPlayer && <ImagePlayer onClose={() => setShowPlayer(false)} fetching={fetching} setFetching={setFetching} />}
+              {showPlayer && <ImagePlayer 
+                onClose={() => setShowPlayer(false)} 
+                fetching={fetching} 
+                setFetching={setFetching}
+                selectedMap={selectedMap}
+              />}
             </div>
             <div className="side-cards">
               <h2 className="team-title blue">蓝方</h2>
