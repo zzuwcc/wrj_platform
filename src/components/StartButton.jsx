@@ -16,11 +16,12 @@ export default function StartButton({ selectedMap, onStarted, params }) {
     if (url) {
       setLoading(true);
       try {
-        // 先提交参数
+        // 先提交参数，添加地图信息
+        const paramsWithMap = { ...params, map: selectedMap };
         await fetch("http://localhost:5001/submit_params", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(params)
+          body: JSON.stringify(paramsWithMap)
         });
         showNotification("参数提交成功！", "success");
         

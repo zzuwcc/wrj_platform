@@ -111,13 +111,27 @@ def submit_params():
     data = request.get_json()
     print('Received params:', data)
     
+    # 获取地图ID
+    map_id = data.get('map', 'map1')
+    # 根据地图ID获取环境类型
+    env_type = ENV_TYPE_MAPPING.get(map_id, 'CannonReconnHieraricalEnv')
+    
+    print(f'Map ID: {map_id}, Environment Type: {env_type}')
+    
     # 参数映射表
     param_mapping = {
         'radius': {
             'recons': {
-                'small': 70,
-                'medium': 80,
-                'large': 200
+                'RaderReconnHieraricalEnv': {
+                    'small': 70,
+                    'medium': 80,
+                    'large': 90
+                },
+                'CannonReconnHieraricalEnv': {
+                    'small': 180,
+                    'medium': 200,
+                    'large': 220
+                }
             },
             'cannons': {
                 'small': 50,
@@ -148,7 +162,13 @@ def submit_params():
             for unit_id, params in units.items():
                 processed_data['red'][unit_type][unit_id] = {}
                 for param_name, param_value in params.items():
-                    if param_name == 'radius' and param_value in param_mapping['radius'].get(unit_type, {}):
+                    if param_name == 'radius' and unit_type == 'recons':
+                        # 使用环境类型选择对应的半径参数
+                        if param_value in param_mapping['radius']['recons'][env_type]:
+                            processed_data['red'][unit_type][unit_id][param_name] = param_mapping['radius']['recons'][env_type][param_value]
+                        else:
+                            processed_data['red'][unit_type][unit_id][param_name] = param_value
+                    elif param_name == 'radius' and param_value in param_mapping['radius'].get(unit_type, {}):
                         processed_data['red'][unit_type][unit_id][param_name] = param_mapping['radius'][unit_type][param_value]
                     elif param_name == 'speed' and param_value in param_mapping['speed']:
                         processed_data['red'][unit_type][unit_id][param_name] = param_mapping['speed'][param_value]
@@ -163,7 +183,13 @@ def submit_params():
             for unit_id, params in units.items():
                 processed_data['blue'][unit_type][unit_id] = {}
                 for param_name, param_value in params.items():
-                    if param_name == 'radius' and param_value in param_mapping['radius'].get(unit_type, {}):
+                    if param_name == 'radius' and unit_type == 'recons':
+                        # 使用环境类型选择对应的半径参数
+                        if param_value in param_mapping['radius']['recons'][env_type]:
+                            processed_data['blue'][unit_type][unit_id][param_name] = param_mapping['radius']['recons'][env_type][param_value]
+                        else:
+                            processed_data['blue'][unit_type][unit_id][param_name] = param_value
+                    elif param_name == 'radius' and param_value in param_mapping['radius'].get(unit_type, {}):
                         processed_data['blue'][unit_type][unit_id][param_name] = param_mapping['radius'][unit_type][param_value]
                     elif param_name == 'speed' and param_value in param_mapping['speed']:
                         processed_data['blue'][unit_type][unit_id][param_name] = param_mapping['speed'][param_value]
