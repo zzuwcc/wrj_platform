@@ -47,14 +47,14 @@ export default function ParamCard({ type, id, idList, color, side, param = {}, o
       transition={{ duration: 0.3 }}
       whileHover={{ scale: 1.02 }}
       style={{
-        width: "320px",
-        borderRadius: "18px",
+        width: "280px",
+        borderRadius: "15px",
         boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
         background: "#fff",
         color: "#334155",
-        fontSize: "18px",
-        padding: "20px",
-        marginBottom: "16px",
+        fontSize: "16px",
+        padding: "16px",
+        marginBottom: "12px",
         border: `2px solid ${color}`,
         position: "relative",
         overflow: "hidden"
@@ -66,8 +66,8 @@ export default function ParamCard({ type, id, idList, color, side, param = {}, o
           position: "absolute", 
           top: 0, 
           right: 0, 
-          width: "120px", 
-          height: "120px", 
+          width: "100px", 
+          height: "100px", 
           opacity: 0.1, 
           zIndex: 0,
           display: "flex",
@@ -75,32 +75,32 @@ export default function ParamCard({ type, id, idList, color, side, param = {}, o
           alignItems: "center"
         }}
       >
-        <TypeIcon style={{ color, fontSize: "80px" }} />
+        <TypeIcon style={{ color, fontSize: "70px" }} />
       </div>
       
       {/* Card Header */}
       <div style={{ 
         display: "flex", 
         alignItems: "center", 
-        marginBottom: "16px", 
+        marginBottom: "12px", 
         position: "relative", 
         zIndex: 1 
       }}>
         <div style={{ 
-          width: "40px", 
-          height: "40px", 
-          borderRadius: "12px", 
+          width: "36px", 
+          height: "36px", 
+          borderRadius: "10px", 
           backgroundColor: color, 
           display: "flex", 
           alignItems: "center", 
           justifyContent: "center", 
-          marginRight: "12px",
+          marginRight: "10px",
           flexShrink: 0
         }}>
-          <TypeIcon style={{ color: "white", fontSize: "20px" }} />
+          <TypeIcon style={{ color: "white", fontSize: "18px" }} />
         </div>
         <div>
-          <div style={{ fontWeight: "bold", fontSize: "20px", color: "#1e293b" }}>
+          <div style={{ fontWeight: "bold", fontSize: "18px", color: "#1e293b" }}>
             {typeMap[type]}
           </div>
           <div style={{ 
@@ -108,14 +108,14 @@ export default function ParamCard({ type, id, idList, color, side, param = {}, o
             alignItems: "center", 
             marginTop: "4px" 
           }}>
-            <span style={{ marginRight: "8px" }}>编号:</span>
+            <span style={{ marginRight: "6px", fontSize: "14px" }}>编号:</span>
             <select 
               value={id} 
               onChange={handleIdxChange} 
               style={{ 
-                fontSize: "16px",
-                padding: "4px 8px",
-                borderRadius: "6px",
+                fontSize: "14px",
+                padding: "3px 6px",
+                borderRadius: "5px",
                 border: "1px solid #e2e8f0",
                 backgroundColor: "#f8fafc",
                 color: "#334155",
@@ -134,36 +134,36 @@ export default function ParamCard({ type, id, idList, color, side, param = {}, o
       <div style={{ 
         display: "flex", 
         flexDirection: "column", 
-        gap: "16px",
+        gap: "12px",
         position: "relative",
         zIndex: 1,
         backgroundColor: "#f8fafc",
-        padding: "16px",
-        borderRadius: "12px"
+        padding: "12px",
+        borderRadius: "10px"
       }}>
         {/* Radius Control */}
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ 
-            width: "32px", 
-            height: "32px", 
+            width: "28px", 
+            height: "28px", 
             display: "flex", 
             alignItems: "center", 
             justifyContent: "center", 
-            marginRight: "12px",
+            marginRight: "10px",
             color
           }}>
-            <FaCircle size={16} />
+            <FaCircle size={14} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "16px", marginBottom: "4px", color: "#64748b" }}>半径</div>
+            <div style={{ fontSize: "14px", marginBottom: "3px", color: "#64748b" }}>半径</div>
             <select
               value={safeParam.radius || "medium"}
               onChange={handleRadiusChange}
               style={{ 
                 width: "100%",
-                fontSize: "16px",
-                padding: "8px 12px",
-                borderRadius: "8px",
+                fontSize: "14px",
+                padding: "6px 10px",
+                borderRadius: "6px",
                 border: "1px solid #e2e8f0",
                 backgroundColor: "#ffffff",
                 color: "#334155"
@@ -180,26 +180,26 @@ export default function ParamCard({ type, id, idList, color, side, param = {}, o
         {(type === "recons" || type === "cannons") && speedOptions && (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ 
-              width: "32px", 
-              height: "32px", 
+              width: "28px", 
+              height: "28px", 
               display: "flex", 
               alignItems: "center", 
               justifyContent: "center", 
-              marginRight: "12px",
+              marginRight: "10px",
               color
             }}>
-              <FaTachometerAlt size={16} />
+              <FaTachometerAlt size={14} />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: "16px", marginBottom: "4px", color: "#64748b" }}>速度</div>
+              <div style={{ fontSize: "14px", marginBottom: "3px", color: "#64748b" }}>速度</div>
               <select
                 value={safeParam.speed || "medium"}
                 onChange={handleSpeedChange}
                 style={{ 
                   width: "100%",
-                  fontSize: "16px",
-                  padding: "8px 12px",
-                  borderRadius: "8px",
+                  fontSize: "14px",
+                  padding: "6px 10px",
+                  borderRadius: "6px",
                   border: "1px solid #e2e8f0",
                   backgroundColor: "#ffffff",
                   color: "#334155"

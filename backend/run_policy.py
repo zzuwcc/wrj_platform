@@ -14,9 +14,9 @@ IMG_DIR = os.path.join(BASE_DIR, 'MACA', 'render', 'tmp')
 
 # 地图名称映射表
 MAP_NAME_MAPPING = {
-    'map1': 'dz_easy',          # 对战场景-简单
-    'map2': 'dz_medium_v2',     # 对战场景-中等
-    'map3': 'dz_hard_v2',       # 对战场景-困难
+    'map1': 'dz_easy_v5',          # 对战场景-简单
+    'map2': 'dz_medium_v7',     # 对战场景-中等
+    'map3': 'dz_hard_v8',       # 对战场景-困难
     'map4': 'zc_easy',          # 侦察场景-简单
     'map5': 'zc_medium',        # 侦察场景-中等
     'map6': 'zc_hard'           # 侦察场景-困难
@@ -124,7 +124,7 @@ def submit_params():
             'recons': {
                 'RaderReconnHieraricalEnv': {
                     'small': 70,
-                    'medium': 80,
+                    'medium': 85,
                     'large': 90
                 },
                 'CannonReconnHieraricalEnv': {
