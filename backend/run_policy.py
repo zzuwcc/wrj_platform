@@ -205,5 +205,55 @@ def submit_params():
     print(f'Processed params saved to {config_path}')
     return jsonify({'status': 'ok', 'file_path': config_path})
 
+# 图片展示接口
+@app.route('/static/<filename>')
+def serve_static_file(filename):
+    """提供静态文件服务"""
+    static_dir = os.path.join(os.path.dirname(__file__), 'static')
+    try:
+        return send_from_directory(static_dir, filename)
+    except FileNotFoundError:
+        return jsonify({'error': 'File not found'}), 404
+
+@app.route('/image/<int:image_number>')
+def serve_image_by_number(image_number):
+    """通过编号访问图片（1-6对应01.png-06.png）"""
+    if not 1 <= image_number <= 6:
+        return jsonify({'error': 'Image number must be between 1 and 6'}), 400
+    
+    filename = f'{image_number:02d}.png'
+    static_dir = os.path.join(os.path.dirname(__file__), 'static')
+    
+    try:
+        return send_from_directory(static_dir, filename)
+    except FileNotFoundError:
+        return jsonify({'error': f'Image {filename} not found'}), 404
+
+@app.route('/images')
+def list_images():
+    """返回所有可用图片的列表和访问链接"""
+    static_dir = os.path.join(os.path.dirname(__file__), 'static')
+    try:
+        files = os.listdir(static_dir)
+        image_files = [f for f in files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        image_files.sort()
+        
+        images_info = []
+        for i, img_file in enumerate(image_files, 1):
+            images_info.append({
+                'filename': img_file,
+                'number': i,
+                'url_by_name': f'/static/{img_file}',
+                'url_by_number': f'/image/{i}'
+            })
+        
+        return jsonify({
+            'status': 'success',
+            'count': len(image_files),
+            'images': images_info
+        })
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(port=5001) 
